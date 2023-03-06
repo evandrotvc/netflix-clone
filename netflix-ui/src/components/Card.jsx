@@ -13,6 +13,8 @@ import { useDispatch } from "react-redux";
 import { removeMovieFromLiked } from "../store";
 import video from "../assets/video.mp4";
 import video2 from "../assets/video2.mp4";
+import { toast } from 'react-toastify'
+
 
 export default React.memo(function Card({ index, movieData, isLiked = false }) {
   const navigate = useNavigate();
@@ -28,10 +30,11 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
 
   const addToList = async () => {
     try {
-      await axios.post("http://localhost:5000/api/user/add", {
-        email,
-        data: movieData,
-      });
+      toast.success("Wow so easy!");
+      // await axios.post("http://localhost:5000/api/user/add", {
+      //   email,
+      //   data: movieData,
+      // });
     } catch (error) {
       console.log(error);
     }
