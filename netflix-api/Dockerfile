@@ -10,8 +10,8 @@ RUN apt-get update -qq && apt-get install -y vim\
         libsqlite3-dev \
         sqlite3
 
-WORKDIR /netflix
-COPY Gemfile Gemfile.lock ./
+WORKDIR /netflix-api
+COPY Gemfile Gemfile.lock netflix-api/
 
 # Copy our files to the netflix.
 COPY . ./
