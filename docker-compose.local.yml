@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    container_name: netflix_db
+    image: postgres:14.2
+    environment:
+      POSTGRES_DB: netflix_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - netflix-postgres:/var/lib/postgresql/data
+
+
+  netflix:
+    container_name: netflix-app
+    # command: "bundle exec rails server -p 3000 -b '0.0.0.0'"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    # entrypoint: ["tail", "-f", "/dev/null"]
+    build: ./netflix-api
+      # dockerfile: ./Dockerfile.local
+    volumes:
+      - .:/netflix
+    links:
+      - postgres
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    stdin_open: true
+    tty: true
+
+  frontend:
+    build: ./netflix-ui
+    container_name: netflix-ui
+    ports:
+      - 3001:3001
+    links:
+      - netflix-api
+
+volumes:
+  netflix-postgres:
