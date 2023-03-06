@@ -11,11 +11,10 @@ RUN apt-get update -qq && apt-get install -y vim\
         sqlite3
 
 WORKDIR /netflix
-COPY Gemfile /netflix/Gemfile
-COPY Gemfile.lock /netflix/Gemfile.lock
+COPY Gemfile Gemfile.lock ./
 
 # Copy our files to the netflix.
-# COPY . /netflix
+COPY . ./
 
 RUN gem install bundler -v $BUNDLER_VERSION \
   && bundle config build.nokogiri --use-system-libraries \
