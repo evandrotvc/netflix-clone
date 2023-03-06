@@ -34,14 +34,15 @@ services:
       - postgres
     stdin_open: true
     tty: true
+    environment:
+      RAILS_ENV: development
 
   frontend:
     build: ./netflix-ui
     container_name: netflix-ui
     ports:
       - 3001:3001
-    links:
-      - netflix
 
 volumes:
   netflix-postgres:
+  netflix:
