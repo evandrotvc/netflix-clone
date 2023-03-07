@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
   root 'sessions#create'
 
-  post 'sign_up'   => 'users#create'
-  post 'login'   => 'sessions#create'
-  delete 'sign_out'  => 'sessions#destroy'
+  post 'sign_up' => 'users#create'
+  post 'login' => 'sessions#create'
+  delete 'sign_out' => 'sessions#destroy'
 
   resources :users
 end

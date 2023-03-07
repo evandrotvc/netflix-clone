@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authorize, except: [:new, :create, :index]
+  before_action :authorize, except: %i[new create index]
   before_action :set_user, only: %i[show edit update destroy]
 
   # GET /users or /users.json
@@ -33,9 +33,9 @@ class UsersController < ApplicationController
     byebug
 
     if @user.save
-        render json: @user, status: :ok
+      render json: @user, status: :ok
     else
-        render json: @user.errors, status: :unprocessable_entity
+      render json: @user.errors, status: :unprocessable_entity
     end
 
     # respond_to do |format|
