@@ -23,7 +23,7 @@ services:
     build: ./netflix-api
       # dockerfile: ./Dockerfile.local
     volumes:
-      - .:/netflix
+      - ./netflix-api:/./netflix-api
     links:
       - postgres
     ports:
