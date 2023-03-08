@@ -8,6 +8,9 @@ import styled from "styled-components";
 import BackgroundImage from "../components/BackgroundImage";
 import Header from "../components/Header";
 import { firebaseAuth } from "../utils/firebase-config";
+import axios from "axios";
+import { toast } from 'react-toastify'
+
 function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -19,15 +22,30 @@ function Signup() {
   const handleSignIn = async () => {
     try {
       const { email, password } = formValues;
-      await createUserWithEmailAndPassword(firebaseAuth, email, password);
+
+      // await createUserWithEmailAndPassword(firebaseAuth, email, password);
+      const response =  await axios.post(`http://localhost:3000/users`, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        user : {
+          name: '',
+          email: email,
+          password_digest: password
+      },
+      });
+      toast.success("User created with sucess!");
+      navigate("/")
+      // debugger
     } catch (error) {
       console.log(error);
     }
   };
 
-  onAuthStateChanged(firebaseAuth, (currentUser) => {
-    if (currentUser) navigate("/");
-  });
+  // onAuthStateChanged(firebaseAuth, (currentUser) => {
+  //   if (currentUser) navigate("/");
+  // });
 
   return (
     <Container showPassword={showPassword}>

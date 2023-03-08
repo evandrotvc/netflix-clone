@@ -17,13 +17,13 @@ services:
 
   netflix:
     container_name: netflix-app
-    # command: "bundle exec rails server -p 3000 -b '0.0.0.0'"
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     # entrypoint: ["tail", "-f", "/dev/null"]
     build: ./netflix-api
       # dockerfile: ./Dockerfile.local
     volumes:
       - ./netflix-api:/./netflix-api
+      # - ./netflix-api:/netflix-api
     links:
       - postgres
     ports:
@@ -37,11 +37,11 @@ services:
     environment:
       RAILS_ENV: development
 
-  frontend:
-    build: ./netflix-ui
-    container_name: netflix-ui
-    ports:
-      - 3001:3001
+  # frontend:
+  #   build: ./netflix-ui
+  #   container_name: netflix-ui
+  #   ports:
+  #     - 3001:3001
 
 volumes:
   netflix-postgres:

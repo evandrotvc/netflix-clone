@@ -21,8 +21,7 @@ export const getGenres = createAsyncThunk("netflix/genres", async () => {
   return genres;
 });
 
-const createArrayFromRawData = (array, moviesArray, genres) => {
-  debugger
+const createArrayFromRawData = (array, moviesArray, genres) => { 
   array.forEach((movie) => {
     const movieGenres = [];
     movie.genre_ids.forEach((genre) => {
@@ -75,6 +74,16 @@ export const fetchMovies = createAsyncThunk(
       genres,
       true
     );
+  }
+);
+
+
+export const register = createAsyncThunk(
+  "netflix/getLiked",
+  async (name, email, password) => {
+    const response =  await axios.post(`http://0.0.0.0:3000/users/`, { name, email, password });
+    debugger
+    // return movies;
   }
 );
 

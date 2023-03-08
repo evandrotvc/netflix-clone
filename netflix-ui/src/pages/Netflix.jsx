@@ -31,9 +31,9 @@ function Netflix() {
     }
   }, [genresLoaded]);
 
-  onAuthStateChanged(firebaseAuth, (currentUser) => {
-    if (!currentUser) navigate("/login");
-  });
+  // onAuthStateChanged(firebaseAuth, (currentUser) => {
+  //   if (!currentUser) navigate("/login");
+  // });
 
   window.onscroll = () => {
     setIsScrolled(window.pageYOffset === 0 ? false : true);
