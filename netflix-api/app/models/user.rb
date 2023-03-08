@@ -4,6 +4,7 @@ require 'bcrypt'
 
 class User < ApplicationRecord
   include BCrypt
+  include ActiveModel::SecurePassword
 
   has_secure_password
 

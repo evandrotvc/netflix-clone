@@ -6,6 +6,7 @@ RSpec.describe SessionsController, type: :controller do
   include BCrypt
 
   let!(:user) { create(:user, password_digest: BCrypt::Password.create('123456')) }
+  let(:json) { JSON.parse(response.body) }
 
   describe 'post /create' do
     context 'login success' do
@@ -26,6 +27,9 @@ RSpec.describe SessionsController, type: :controller do
 
       it 'returns http success' do
         expect(response).to have_http_status(:ok)
+        expect(json['token']).should_not be_nil
+        expect(json['exp']).should_not be_nil
+        expect(json['email']).to eq(user.email)
       end
     end
 

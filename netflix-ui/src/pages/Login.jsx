@@ -7,6 +7,8 @@ import BackgroundImage from "../components/BackgroundImage";
 import Header from "../components/Header";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from "../utils/firebase-config";
+import axios from "axios";
+import { toast } from 'react-toastify'
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -15,7 +17,20 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      await signInWithEmailAndPassword(firebaseAuth, email, password);
+      const response = await axios.post(`http://localhost:3000/login`, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        session : {
+          email: email,
+          password: password
+      },
+      });
+
+      localStorage.setItem('user', JSON.stringify(response.data))
+      toast.success("login sucess!");
+      navigate("/")
     } catch (error) {
       console.log(error.code);
     }

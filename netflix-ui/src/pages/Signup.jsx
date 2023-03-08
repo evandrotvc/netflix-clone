@@ -23,8 +23,7 @@ function Signup() {
     try {
       const { email, password } = formValues;
 
-      // await createUserWithEmailAndPassword(firebaseAuth, email, password);
-      const response =  await axios.post(`http://localhost:3000/users`, {
+      await axios.post(`http://localhost:3000/users`, {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -32,12 +31,12 @@ function Signup() {
         user : {
           name: '',
           email: email,
-          password_digest: password
+          password: password
       },
       });
+
       toast.success("User created with sucess!");
-      navigate("/")
-      // debugger
+      navigate("/login")
     } catch (error) {
       console.log(error);
     }

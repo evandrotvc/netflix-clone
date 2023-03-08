@@ -7,7 +7,7 @@ RSpec.describe UsersController, type: :controller do
   let(:valid_attributes) do
     {
       name: 'evandro',
-      password_digest: '1234',
+      password: '1234',
       email: 'evandro@gmail.com'
     }
   end
