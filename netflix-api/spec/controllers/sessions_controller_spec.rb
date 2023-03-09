@@ -64,7 +64,7 @@ RSpec.describe SessionsController, type: :controller do
       login(user)
       do_request
 
-      expect(response).to redirect_to(root_path)
+      expect(session[:user_id]).should be_nil
     end
   end
 end
