@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
-  before_action :authorize, except: %i[new create index]
-  #   before_action :authorize_request, except: :create jwt
-  before_action :set_user, only: %i[show edit update destroy]
+  before_action :authorize_request, except: %i[new create]
+  before_action :set_user, only: %i[show edit update destroy like]
 
   # GET /users or /users.json
   def index
@@ -54,15 +53,24 @@ class UsersController < ApplicationController
     end
   end
 
+  def like
+    MovieLiked.create(movie_params.merge(user_id: @user.id))
+    render json: { message: "Movie liked with sucess" }, status: :ok
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user
-    @user = User.find(params[:id])
+    @user = @current_user
   end
 
   # Only allow a list of trusted parameters through.
   def user_params
     params.require(:user).permit(:name, :email, :password)
+  end
+
+  def movie_params
+    params.require(:movie).permit(:name, :image_url, :genres, :movie_id)
   end
 end
