@@ -6,7 +6,7 @@ RSpec.describe MovieLiked do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:movie_id) }
-    it { is_expected.to validate_presence_of(:image_url) }
+    it { is_expected.to validate_presence_of(:image) }
     it { is_expected.to validate_presence_of(:genres) }
   end
 

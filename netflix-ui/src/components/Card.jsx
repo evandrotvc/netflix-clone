@@ -12,7 +12,6 @@ import { firebaseAuth } from "../utils/firebase-config";
 import { useDispatch } from "react-redux";
 import { removeMovieFromLiked } from "../store";
 import video from "../assets/video.mp4";
-import video2 from "../assets/video2.mp4";
 import { toast } from 'react-toastify'
 
 
@@ -28,17 +27,42 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
   //   } else navigate("/login");
   // });
 
-  const addToList = async () => {
+  const addToList = async (movie) => {
     try {
-      toast.success("Wow so easy!");
-      // await axios.post("http://localhost:5000/api/user/add", {
-      //   email,
-      //   data: movieData,
-      // });
+      const data = JSON.parse(localStorage.getItem('user'))
+
+      const dto = {
+        movie: {
+          movie_id: movie.id,
+          name: movie.name,
+          genres: movie.genres.join(),
+          image: movie.image
+        }
+      }
+
+      await axios.post(`http://localhost:3000/users/${data.user_id}/like`, dto, {
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${data.token}`,
+          'Accept': "application/json",
+        },
+      });
+
+      toast.success("Movie added in your list!");
     } catch (error) {
+      toast.error('Movie already was in your list.')
       console.log(error);
     }
   };
+
+  const processingGenres = (genres) => {
+    if (genres === undefined) return []
+    if (typeof genres == 'string'){
+      return genres.split(',')
+    }
+
+    return genres
+  }
 
   return (
     <Container
@@ -88,7 +112,7 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
                     }
                   />
                 ) : (
-                  <AiOutlinePlus title="Add to my list" onClick={addToList} />
+                  <AiOutlinePlus title="Add to my list" onClick={ () => addToList(movieData)} />
                 )}
               </div>
               <div className="info">
@@ -97,7 +121,7 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
             </div>
             <div className="genres flex">
               <ul className="flex">
-                {movieData.genres.map((genre, index) => (
+                {processingGenres(movieData.genres).map((genre, index) => (
                   <li key={index}>{genre}</li>
                 ))}
               </ul>

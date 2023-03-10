@@ -16,7 +16,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_130835) do
 
   create_table "movie_likeds", force: :cascade do |t|
     t.string "name", null: false
-    t.string "image_url", null: false
+    t.string "image", null: false
     t.string "movie_id", null: false
     t.string "genres", null: false
     t.bigint "user_id", null: false

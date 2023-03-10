@@ -7,5 +7,6 @@ Rails.application.routes.draw do
 
   resources :users do
     post :like
+    get :likeds
   end
 end

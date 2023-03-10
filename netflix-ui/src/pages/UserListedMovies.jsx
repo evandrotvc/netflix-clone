@@ -14,18 +14,30 @@ export default function UserListedMovies() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [email, setEmail] = useState(undefined);
+  const [datas, setData] = useState(undefined);
 
-  onAuthStateChanged(firebaseAuth, (currentUser) => {
-    if (currentUser) setEmail(currentUser.email);
-    else navigate("/login");
-  });
+  // onAuthStateChanged(firebaseAuth, (currentUser) => {
+  //   if (currentUser) setEmail(currentUser.email);
+  //   else navigate("/login");
+  // });
+
+  useEffect( () => {
+    function userSignIn(){
+      const data = JSON.parse(localStorage.getItem('user'))
+      if(data) setData(data);
+      else navigate("/login");
+    }
+
+    userSignIn()
+  }, [navigate])
+
 
   useEffect(() => {
-    if (email) {
-      dispatch(getUsersLikedMovies(email));
+    if (datas) {
+      debugger
+      dispatch(getUsersLikedMovies(datas));
     }
-  }, [email]);
+  }, [datas]);
 
   window.onscroll = () => {
     setIsScrolled(window.pageYOffset === 0 ? false : true);

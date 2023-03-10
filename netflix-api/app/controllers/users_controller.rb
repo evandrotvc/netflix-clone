@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authorize_request, except: %i[new create]
-  before_action :set_user, only: %i[show edit update destroy like]
+  before_action :set_user, only: %i[show edit update destroy like likeds]
 
   # GET /users or /users.json
   def index
@@ -54,8 +54,20 @@ class UsersController < ApplicationController
   end
 
   def like
-    MovieLiked.create(movie_params.merge(user_id: @user.id))
+    MovieLiked.create!(
+      name: movie_params[:name],
+      image: movie_params[:image],
+      genres: movie_params[:genres],
+      movie_id: movie_params[:movie_id],
+      user_id:  @user.id)
+  
     render json: { message: "Movie liked with sucess" }, status: :ok
+  end
+
+  def likeds
+    @movies = @current_user.movie_likeds
+  
+    render json: { movies: @movies }, status: :ok
   end
 
   private
@@ -71,6 +83,6 @@ class UsersController < ApplicationController
   end
 
   def movie_params
-    params.require(:movie).permit(:name, :image_url, :genres, :movie_id)
+    params.require(:movie).permit(:name, :image, :genres, :movie_id)
   end
 end

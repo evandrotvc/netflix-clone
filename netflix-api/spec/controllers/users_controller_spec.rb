@@ -51,7 +51,7 @@ RSpec.describe UsersController, type: :controller do
         {
           name: 'The last of us',
           movie_id: '1234',
-          image_url: 'youtube/last_of_us',
+          image: 'youtube/last_of_us',
           genres: 'Drama, Adventure'
         }
       end
@@ -67,6 +67,25 @@ RSpec.describe UsersController, type: :controller do
       it 'user likes a movie' do
         login(user)
         expect { do_request }.to change(MovieLiked, :count).by(1)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe 'POST /likeds' do
+    context 'with valid parameters' do
+      let!(:user) { create(:user) }
+      let(:do_request) do
+        get :likeds, params: { user_id: user.id }, as: :json
+      end
+
+      it 'user likes no login' do
+        do_request
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'user likes a movie' do
+        login(user)
         expect(response).to have_http_status(:ok)
       end
     end

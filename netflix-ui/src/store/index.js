@@ -89,10 +89,17 @@ export const register = createAsyncThunk(
 
 export const getUsersLikedMovies = createAsyncThunk(
   "netflix/getLiked",
-  async (email) => {
+  async (datas) => {
     const {
       data: { movies },
-    } = await axios.get(`http://localhost:5000/api/user/liked/${email}`);
+    } = await axios.get(`http://localhost:3000/users/${datas.user_id}/likeds`, {
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${datas.token}`,
+        'Accept': "application/json",
+      },
+    });
+
     return movies;
   }
 );
