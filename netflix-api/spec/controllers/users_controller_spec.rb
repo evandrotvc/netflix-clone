@@ -45,16 +45,17 @@ RSpec.describe UsersController, type: :controller do
 
 
   describe 'POST /like' do
+    let!(:user) { create(:user) }
+    let(:movie_params) do
+      {
+        name: 'The last of us',
+        movie_id: '1234',
+        image: 'youtube/last_of_us',
+        genres: 'Drama, Adventure'
+      }
+    end
+
     context 'with valid parameters' do
-      let!(:user) { create(:user) }
-      let(:movie_params) do
-        {
-          name: 'The last of us',
-          movie_id: '1234',
-          image: 'youtube/last_of_us',
-          genres: 'Drama, Adventure'
-        }
-      end
       let(:do_request) do
         post :like, params: { user_id: user.id, movie: movie_params }, as: :json
       end
@@ -68,6 +69,31 @@ RSpec.describe UsersController, type: :controller do
         login(user)
         expect { do_request }.to change(MovieLiked, :count).by(1)
         expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'invalid same movie to user' do
+      let!(:movie_liked) { create(:movie_liked, user: user) }
+      let!(:movie_liked2) { create(:movie_liked, user: user) }
+
+      let(:movie_params) do
+        {
+          name: 'The last of us',
+          movie_id: movie_liked.movie_id,
+          image: 'youtube/last_of_us',
+          genres: 'Drama, Adventure'
+        }
+      end
+
+      let(:do_request) do
+        post :like, params: { user_id: user.id, movie: movie_params }, as: :json
+      end
+
+      it 'must to raise exception record unique' do
+        login(user)
+
+        expect { do_request }
+        .to raise_error(ActiveRecord::RecordNotUnique)
       end
     end
   end
