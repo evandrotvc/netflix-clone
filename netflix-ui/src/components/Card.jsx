@@ -38,7 +38,7 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
         }
       }
 
-      await axios.post(`http://localhost:3000/users/${data.user_id}/like`, dto, {
+      await axios.post(`http://localhost:3000/users/${data.user_id}/add_wish`, dto, {
         headers: {
           "Content-Type": "application/json",
           'Authorization': `Bearer ${data.token}`,

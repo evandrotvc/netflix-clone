@@ -92,7 +92,7 @@ export const getUsersLikedMovies = createAsyncThunk(
   async (datas) => {
     const {
       data: { movies },
-    } = await axios.get(`http://localhost:3000/users/${datas.user_id}/likeds`, {
+    } = await axios.get(`http://localhost:3000/users/${datas.user_id}/list_wisheds`, {
       headers: {
         "Content-Type": "application/json",
         'Authorization': `Bearer ${datas.token}`,

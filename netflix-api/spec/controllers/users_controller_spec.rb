@@ -44,7 +44,7 @@ RSpec.describe UsersController, type: :controller do
   end
 
 
-  describe 'POST /like' do
+  describe 'POST /add_wish' do
     let!(:user) { create(:user) }
     let(:movie_params) do
       {
@@ -57,7 +57,7 @@ RSpec.describe UsersController, type: :controller do
 
     context 'with valid parameters' do
       let(:do_request) do
-        post :like, params: { user_id: user.id, movie: movie_params }, as: :json
+        post :add_wish, params: { user_id: user.id, movie: movie_params }, as: :json
       end
 
       it 'user likes no login' do
@@ -67,26 +67,27 @@ RSpec.describe UsersController, type: :controller do
 
       it 'user likes a movie' do
         login(user)
-        expect { do_request }.to change(MovieLiked, :count).by(1)
+        expect { do_request }.to change(Movie, :count).by(1)
+        .and change(UserList, :count).by(1)
         expect(response).to have_http_status(:ok)
       end
     end
 
     context 'invalid same movie to user' do
-      let!(:movie_liked) { create(:movie_liked, user: user) }
-      let!(:movie_liked2) { create(:movie_liked, user: user) }
+      let!(:movie) { create(:movie) }
+      let!(:user_lists) { create(:user_list, user: user, movie: movie, wished: true) }
 
       let(:movie_params) do
         {
           name: 'The last of us',
-          movie_id: movie_liked.movie_id,
+          movie_id: movie.movie_id,
           image: 'youtube/last_of_us',
           genres: 'Drama, Adventure'
         }
       end
 
       let(:do_request) do
-        post :like, params: { user_id: user.id, movie: movie_params }, as: :json
+        post :add_wish, params: { user_id: user.id, movie: movie_params }, as: :json
       end
 
       it 'must to raise exception record unique' do
@@ -98,11 +99,13 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  describe 'POST /likeds' do
+  describe 'GET /list_wisheds' do
     context 'with valid parameters' do
       let!(:user) { create(:user) }
+      let!(:user_lists) { create(:user_list, user: user) }
+      let!(:user_lists2) { create(:user_list, user: user) }
       let(:do_request) do
-        get :likeds, params: { user_id: user.id }, as: :json
+        get :list_wisheds, params: { user_id: user.id }, as: :json
       end
 
       it 'user likes no login' do
@@ -112,6 +115,65 @@ RSpec.describe UsersController, type: :controller do
 
       it 'user likes a movie' do
         login(user)
+        do_request
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+
+  describe 'POST /evaluation' do
+    let!(:user) { create(:user) }
+    let(:movie_params) do
+      {
+        name: 'The last of us',
+        movie_id: '1234',
+        image: 'youtube/last_of_us',
+        genres: 'Drama, Adventure'
+      }
+    end
+
+    context 'with valid parameters' do
+      let(:do_request) do
+        post :evaluation, params: { user_id: user.id, movie: movie_params, evaluation: 'like' }, as: :json
+      end
+
+      it 'user likes no login' do
+        do_request
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'user likes a movie' do
+        login(user)
+        expect { do_request }.to change(Movie, :count).by(1)
+        .and change(UserList, :count).by(1)
+        expect(response).to have_http_status(:ok)
+        expect(UserList.last.evaluation).to eq('like')
+      end
+    end
+
+    context 'deslike in movie' do
+      let!(:movie) { create(:movie) }
+      let!(:user_lists) { create(:user_list, user: user, movie: movie, evaluation: 'like') }
+
+      let(:movie_params) do
+        {
+          name: 'The last of us',
+          movie_id: movie.movie_id,
+          image: 'youtube/last_of_us',
+          genres: 'Drama, Adventure'
+        }
+      end
+
+      let(:do_request) do
+        post :evaluation, params: { user_id: user.id, movie: movie_params, evaluation: 'deslike' }, as: :json
+      end
+
+      it 'user deslike a movie' do
+        login(user)
+        do_request
+        expect { user_lists.reload }.to change(user_lists, :evaluation).from('like').to('deslike')
+
         expect(response).to have_http_status(:ok)
       end
     end

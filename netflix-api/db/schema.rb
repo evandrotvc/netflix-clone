@@ -10,20 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_09_130835) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_13_123754) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "movie_likeds", force: :cascade do |t|
+  create_table "movies", force: :cascade do |t|
     t.string "name", null: false
     t.string "image", null: false
     t.string "movie_id", null: false
     t.string "genres", null: false
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["movie_id", "user_id"], name: "index_movie_likeds_on_movie_id_and_user_id", unique: true
-    t.index ["user_id"], name: "index_movie_likeds_on_user_id"
+  end
+
+  create_table "user_lists", force: :cascade do |t|
+    t.string "evaluation", default: "neutral"
+    t.boolean "wished", default: false
+    t.bigint "user_id", null: false
+    t.bigint "movie_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["movie_id", "user_id"], name: "index_user_lists_on_movie_id_and_user_id", unique: true
+    t.index ["movie_id"], name: "index_user_lists_on_movie_id"
+    t.index ["user_id"], name: "index_user_lists_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -34,5 +43,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_130835) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "movie_likeds", "users"
+  add_foreign_key "user_lists", "movies"
+  add_foreign_key "user_lists", "users"
 end

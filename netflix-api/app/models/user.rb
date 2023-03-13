@@ -6,7 +6,7 @@ class User < ApplicationRecord
   include BCrypt
   include ActiveModel::SecurePassword
 
-  has_many :movie_likeds
+  has_many :user_lists, class_name: 'UserList'
 
   has_secure_password
 

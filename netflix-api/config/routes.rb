@@ -6,7 +6,8 @@ Rails.application.routes.draw do
   delete 'sign_out' => 'sessions#destroy'
 
   resources :users do
-    post :like
-    get :likeds
+    post :add_wish
+    post :evaluation
+    get :list_wisheds
   end
 end

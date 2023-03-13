@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe MovieLiked do
-  subject(:movie_liked) { build(:movie_liked) }
+  subject(:movie) { build(:movie) }
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
@@ -15,7 +15,7 @@ RSpec.describe MovieLiked do
   end
 
   describe 'user create' do
-    before { movie_liked.save }
+    before { movie.save }
 
     it { is_expected.to be_persisted }
   end

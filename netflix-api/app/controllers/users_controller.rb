@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authorize_request, except: %i[new create]
-  before_action :set_user, only: %i[show edit update destroy like likeds]
+  before_action :set_user, only: %i[show edit update destroy add_wish list_wisheds evaluation]
 
   # GET /users or /users.json
   def index
@@ -53,21 +53,32 @@ class UsersController < ApplicationController
     end
   end
 
-  def like
-    MovieLiked.create!(
-      name: movie_params[:name],
-      image: movie_params[:image],
-      genres: movie_params[:genres],
-      movie_id: movie_params[:movie_id],
-      user_id:  @user.id)
-  
-    render json: { message: "Movie liked with sucess" }, status: :ok
+  def add_wish
+    movie = Movie.find_by(movie_id: movie_params[:movie_id])
+    movie = Movie.create!(movie_params) if movie.blank?
+
+    user_list = UserList.find_by(movie_id: movie.id, user_id: @user.id, wished: false)&.update(wished: true)
+
+    @user.user_lists.create(movie: movie, wished: true) if user_list.blank?
+
+    render json: { message: "Movie added to your wish list with sucess" }, status: :ok
   end
 
-  def likeds
-    @movies = @current_user.movie_likeds
-  
+  def list_wisheds
+    @movies = Movie.joins(:user_lists).where(user_lists: { user_id: @user.id })
+
     render json: { movies: @movies }, status: :ok
+  end
+
+  def evaluation
+    movie = Movie.find_by(movie_id: movie_params[:movie_id])
+    movie = Movie.create!(movie_params) if movie.blank?
+
+    user_list = UserList.find_by(movie_id: movie.id, user_id: @user.id)&.update(evaluation: params[:evaluation])
+
+    @user.user_lists.create(movie: movie, user: @user, evaluation: params[:evaluation]) if user_list.blank?
+
+    render json: { message: "Movie added to your wish list with sucess" }, status: :ok
   end
 
   private
