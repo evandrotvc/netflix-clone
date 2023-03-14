@@ -43,7 +43,6 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-
   describe 'POST /add_wish' do
     let!(:user) { create(:user) }
     let(:movie_params) do
@@ -68,14 +67,14 @@ RSpec.describe UsersController, type: :controller do
       it 'user likes a movie' do
         login(user)
         expect { do_request }.to change(Movie, :count).by(1)
-        .and change(UserList, :count).by(1)
+          .and change(UserList, :count).by(1)
         expect(response).to have_http_status(:ok)
       end
     end
 
     context 'invalid same movie to user' do
       let!(:movie) { create(:movie) }
-      let!(:user_lists) { create(:user_list, user: user, movie: movie, wished: true) }
+      let!(:user_lists) { create(:user_list, user:, movie:, wished: true) }
 
       let(:movie_params) do
         {
@@ -94,7 +93,7 @@ RSpec.describe UsersController, type: :controller do
         login(user)
 
         expect { do_request }
-        .to raise_error(ActiveRecord::RecordNotUnique)
+          .to raise_error(ActiveRecord::RecordNotUnique)
       end
     end
   end
@@ -102,8 +101,8 @@ RSpec.describe UsersController, type: :controller do
   describe 'GET /list_wisheds' do
     context 'with valid parameters' do
       let!(:user) { create(:user) }
-      let!(:user_lists) { create(:user_list, user: user) }
-      let!(:user_lists2) { create(:user_list, user: user) }
+      let!(:user_lists) { create(:user_list, user:) }
+      let!(:user_lists2) { create(:user_list, user:) }
       let(:do_request) do
         get :list_wisheds, params: { user_id: user.id }, as: :json
       end
@@ -121,7 +120,6 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-
   describe 'POST /evaluation' do
     let!(:user) { create(:user) }
     let(:movie_params) do
@@ -135,7 +133,8 @@ RSpec.describe UsersController, type: :controller do
 
     context 'with valid parameters' do
       let(:do_request) do
-        post :evaluation, params: { user_id: user.id, movie: movie_params, evaluation: 'like' }, as: :json
+        post :evaluation,
+          params: { user_id: user.id, movie: movie_params, evaluation: 'like' }, as: :json
       end
 
       it 'user likes no login' do
@@ -146,7 +145,7 @@ RSpec.describe UsersController, type: :controller do
       it 'user likes a movie' do
         login(user)
         expect { do_request }.to change(Movie, :count).by(1)
-        .and change(UserList, :count).by(1)
+          .and change(UserList, :count).by(1)
         expect(response).to have_http_status(:ok)
         expect(UserList.last.evaluation).to eq('like')
       end
@@ -154,7 +153,9 @@ RSpec.describe UsersController, type: :controller do
 
     context 'deslike in movie' do
       let!(:movie) { create(:movie) }
-      let!(:user_lists) { create(:user_list, user: user, movie: movie, evaluation: 'like') }
+      let!(:user_lists) do
+        create(:user_list, user:, movie:, evaluation: 'like')
+      end
 
       let(:movie_params) do
         {
@@ -166,13 +167,16 @@ RSpec.describe UsersController, type: :controller do
       end
 
       let(:do_request) do
-        post :evaluation, params: { user_id: user.id, movie: movie_params, evaluation: 'dislike' }, as: :json
+        post :evaluation,
+          params: { user_id: user.id, movie: movie_params, evaluation: 'dislike' }, as: :json
       end
 
       it 'user deslike a movie' do
         login(user)
         do_request
-        expect { user_lists.reload }.to change(user_lists, :evaluation).from('like').to('dislike')
+        expect do
+          user_lists.reload
+        end.to change(user_lists, :evaluation).from('like').to('dislike')
 
         expect(response).to have_http_status(:ok)
       end
@@ -184,14 +188,20 @@ RSpec.describe UsersController, type: :controller do
     let!(:movie) { create(:movie) }
     let!(:movie2) { create(:movie) }
     let!(:movie3) { create(:movie) }
-    let!(:user_lists) { create(:user_list, user: user, movie: movie, evaluation: 'like', wished: true) }
-    let!(:user_lists2) { create(:user_list, user: user, movie: movie2, evaluation: 'dislike', wished: true) }
-    let!(:user_lists3) { create(:user_list, user: user, movie: movie3, evaluation: 'like') }
-
+    let!(:user_lists) do
+      create(:user_list, user:, movie:, evaluation: 'like', wished: true)
+    end
+    let!(:user_lists2) do
+      create(:user_list, user:, movie: movie2, evaluation: 'dislike', wished: true)
+    end
+    let!(:user_lists3) do
+      create(:user_list, user:, movie: movie3, evaluation: 'like')
+    end
 
     context 'with valid parameters' do
       let(:do_request) do
-        put :remove_list_wisheds, params: { user_id: user.id, movie_id: movie.movie_id }, as: :json
+        put :remove_list_wisheds, params: { user_id: user.id, movie_id: movie.movie_id },
+          as: :json
       end
 
       it 'user likes no login' do

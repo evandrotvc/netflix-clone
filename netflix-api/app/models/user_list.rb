@@ -10,5 +10,4 @@ class UserList < ApplicationRecord
   }
 
   validates :evaluation, presence: true
-
 end
