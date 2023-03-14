@@ -79,7 +79,7 @@ RSpec.describe UsersController, type: :controller do
 
       let(:movie_params) do
         {
-          name: 'The last of us',
+          name: movie.name,
           movie_id: movie.movie_id,
           image: 'youtube/last_of_us',
           genres: 'Drama, Adventure'
@@ -158,7 +158,7 @@ RSpec.describe UsersController, type: :controller do
 
       let(:movie_params) do
         {
-          name: 'The last of us',
+          name: movie.name,
           movie_id: movie.movie_id,
           image: 'youtube/last_of_us',
           genres: 'Drama, Adventure'
@@ -174,6 +174,35 @@ RSpec.describe UsersController, type: :controller do
         do_request
         expect { user_lists.reload }.to change(user_lists, :evaluation).from('like').to('dislike')
 
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe 'PUT /remove_wish_movie' do
+    let!(:user) { create(:user) }
+    let!(:movie) { create(:movie) }
+    let!(:movie2) { create(:movie) }
+    let!(:movie3) { create(:movie) }
+    let!(:user_lists) { create(:user_list, user: user, movie: movie, evaluation: 'like', wished: true) }
+    let!(:user_lists2) { create(:user_list, user: user, movie: movie2, evaluation: 'dislike', wished: true) }
+    let!(:user_lists3) { create(:user_list, user: user, movie: movie3, evaluation: 'like') }
+
+
+    context 'with valid parameters' do
+      let(:do_request) do
+        put :remove_list_wisheds, params: { user_id: user.id, movie_id: movie.movie_id }, as: :json
+      end
+
+      it 'user likes no login' do
+        do_request
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'user likes a movie' do
+        login(user)
+        do_request
+        expect { user_lists.reload }.to change(user_lists, :wished).from(true).to(false)
         expect(response).to have_http_status(:ok)
       end
     end

@@ -9,5 +9,7 @@ Rails.application.routes.draw do
     post :add_wish
     post :evaluation
     get :list_wisheds
+    put :remove_list_wisheds
+    resources :movies
   end
 end

@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authorize_request, except: %i[new create]
-  before_action :set_user, only: %i[show edit update destroy add_wish list_wisheds evaluation]
+  before_action :set_user, only: %i[show edit update destroy add_wish list_wisheds evaluation remove_list_wisheds]
 
   # GET /users or /users.json
   def index
@@ -70,11 +70,17 @@ class UsersController < ApplicationController
     render json: { movies: @movies }, status: :ok
   end
 
+  def remove_list_wisheds
+    @user.user_lists.joins(:movie).find_by(movies: {movie_id: params[:movie_id]})&.update(wished: false)
+
+    render json: { message: 'Movie removed to your list' }, status: :ok
+  end
+
   def evaluation
     movie = Movie.find_by(name: movie_params[:name])
     movie = Movie.create!(movie_params) if movie.blank?
 
-    user_list = UserList.find_by(movie_id: movie.id, user_id: @user.id)&.update(evaluation: params[:evaluation])
+    user_list = @user.user_lists.find_by(movie_id: movie.id)&.update(evaluation: params[:evaluation])
 
     @user.user_lists.create(movie: movie, user: @user, evaluation: params[:evaluation]) if user_list.blank?
 
