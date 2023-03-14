@@ -6,7 +6,7 @@ class UserList < ApplicationRecord
 
   enum evaluation: {
     neutral: 'neutral', like: 'like',
-    deslike: 'deslike'
+    dislike: 'dislike'
   }
 
   validates :evaluation, presence: true

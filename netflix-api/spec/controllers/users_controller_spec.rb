@@ -166,13 +166,13 @@ RSpec.describe UsersController, type: :controller do
       end
 
       let(:do_request) do
-        post :evaluation, params: { user_id: user.id, movie: movie_params, evaluation: 'deslike' }, as: :json
+        post :evaluation, params: { user_id: user.id, movie: movie_params, evaluation: 'dislike' }, as: :json
       end
 
       it 'user deslike a movie' do
         login(user)
         do_request
-        expect { user_lists.reload }.to change(user_lists, :evaluation).from('like').to('deslike')
+        expect { user_lists.reload }.to change(user_lists, :evaluation).from('like').to('dislike')
 
         expect(response).to have_http_status(:ok)
       end

@@ -54,7 +54,7 @@ class UsersController < ApplicationController
   end
 
   def add_wish
-    movie = Movie.find_by(movie_id: movie_params[:movie_id])
+    movie = Movie.find_by(name: movie_params[:name])
     movie = Movie.create!(movie_params) if movie.blank?
 
     user_list = UserList.find_by(movie_id: movie.id, user_id: @user.id, wished: false)&.update(wished: true)
@@ -71,7 +71,7 @@ class UsersController < ApplicationController
   end
 
   def evaluation
-    movie = Movie.find_by(movie_id: movie_params[:movie_id])
+    movie = Movie.find_by(name: movie_params[:name])
     movie = Movie.create!(movie_params) if movie.blank?
 
     user_list = UserList.find_by(movie_id: movie.id, user_id: @user.id)&.update(evaluation: params[:evaluation])
@@ -94,6 +94,6 @@ class UsersController < ApplicationController
   end
 
   def movie_params
-    params.require(:movie).permit(:name, :image, :genres, :movie_id)
+    params.require(:movie).permit(:name, :image, :genres, :movie_id, :evaluation)
   end
 end

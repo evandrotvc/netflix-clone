@@ -33,7 +33,7 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
         movie: {
           movie_id: movie.id,
           name: movie.name,
-          genres: movie.genres.join(),
+          genres:processingGenres(movie.genres).join(),
           image: movie.image
         }
       }
@@ -47,6 +47,36 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
       });
 
       toast.success("Movie added in your list!");
+    } catch (error) {
+      toast.error('Movie already was in your list.')
+      console.log(error);
+    }
+  };
+
+  const evaluation_user = async (movie, evaluation) => {
+    try {
+      const data = JSON.parse(localStorage.getItem('user'))
+      debugger
+
+      const dto = {
+        movie: {
+          movie_id: movie.id,
+          name: movie.name,
+          genres: processingGenres(movie.genres).join(),
+          image: movie.image
+        },
+        evaluation: evaluation
+      }
+
+      await axios.post(`http://localhost:3000/users/${data.user_id}/evaluation`, dto, {
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${data.token}`,
+          'Accept': "application/json",
+        },
+      });
+
+      toast.success(`Movie ${evaluation} with sucess!`);
     } catch (error) {
       toast.error('Movie already was in your list.')
       console.log(error);
@@ -98,8 +128,8 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
                   title="Play"
                   onClick={() => navigate("/player")}
                 />
-                <RiThumbUpFill title="Like" />
-                <RiThumbDownFill title="Dislike" />
+                <RiThumbUpFill title="Like" onClick={() => evaluation_user(movieData, 'like') } />
+                <RiThumbDownFill title="Dislike" onClick={() => evaluation_user(movieData, 'dislike') }/>
                 {isLiked ? (
                   <BsCheck
                     title="Remove from List"

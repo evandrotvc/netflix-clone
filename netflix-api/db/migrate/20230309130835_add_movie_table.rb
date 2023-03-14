@@ -1,7 +1,7 @@
 class AddMovieTable < ActiveRecord::Migration[7.0]
   def change
     create_table :movies do |t|
-      t.string :name, null: false
+      t.string :name, null: false, unique: true
       t.string :image, null: false
       t.string :movie_id, null: false
       t.string :genres, null: false
