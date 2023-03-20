@@ -48,8 +48,15 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
 
       toast.success("Movie added in your list!");
     } catch (error) {
+      const { response } = error;
+      if(response.status === 401){
+        localStorage.removeItem('user')
+        toast.error('Token expired. Sign in in application.')
+        window.location.href = '/login'
+        return
+      }
+
       toast.error('Movie already was in your list.')
-      console.log(error);
     }
   };
 

@@ -10,7 +10,7 @@ module SpecTestHelper
     user = User.where(login: user.to_s).first if user.is_a?(Symbol)
     request.session[:user_id] = user.id
 
-    secret = Rails.application.secrets.json_web_token_secret
+    secret = Rails.application.secrets.secret_key_base.to_s
     encoding = 'HS256'
 
     request.headers['Authorization'] = JWT.encode({ user_id: user.id }, secret, encoding)

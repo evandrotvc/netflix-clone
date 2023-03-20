@@ -14,11 +14,6 @@ export default function UserListedMovies() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [datas, setData] = useState(undefined);
 
-  // onAuthStateChanged(firebaseAuth, (currentUser) => {
-  //   if (currentUser) setEmail(currentUser.email);
-  //   else navigate("/login");
-  // });
-
   useEffect( () => {
     function userSignIn(){
       const data = JSON.parse(localStorage.getItem('user'))
@@ -48,12 +43,12 @@ export default function UserListedMovies() {
       <div className="content flex column">
         <h1>My List</h1>
         <div className="grid flex">
-          {movies.map((movie, index) => {
+          {movies.map((data, index) => {
             return (
               <Card
-                movieData={movie}
+                movieData={data.movie}
                 index={index}
-                key={movie.id}
+                key={data.movie.id}
                 isLiked={true}
               />
             );

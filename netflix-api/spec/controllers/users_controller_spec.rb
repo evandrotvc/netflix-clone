@@ -19,6 +19,8 @@ RSpec.describe UsersController, type: :controller do
     }
   end
 
+  let(:json) { JSON.parse(response.body) }
+
   describe 'POST /create' do
     context 'with valid parameters' do
       let(:do_request) do
@@ -62,6 +64,15 @@ RSpec.describe UsersController, type: :controller do
       it 'user likes no login' do
         do_request
         expect(response).to have_http_status(:unauthorized)
+      end
+
+      it 'login expired' do
+        login(user)
+        request.headers['Authorization'] = JsonWebToken.encode({ :hello => 'world' }, Time.now.to_i - 120)
+        do_request
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(json['errors']).to eq("Signature has expired")
       end
 
       it 'user likes a movie' do

@@ -17,10 +17,14 @@ class ApplicationController < ActionController::Base
   def authorize_request
     header = request.headers['Authorization']
     token = header.split(' ').last if header
+    secret = Rails.application.secrets.secret_key_base.to_s
 
     begin
-      @decoded = JWT.decode(token, nil, false).first
+      @decoded = JWT.decode(token, secret, true).first
       @current_user = User.find(@decoded['user_id'])
+    rescue JWT::ExpiredSignature => e
+      puts 'expiredddddd'
+      render json: { errors: e.message, message: 'Token expired.' }, status: :unauthorized
     rescue ActiveRecord::RecordNotFound => e
       render json: { errors: e.message }, status: :unauthorized
     rescue JWT::DecodeError => e

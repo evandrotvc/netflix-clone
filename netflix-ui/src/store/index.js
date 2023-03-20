@@ -78,17 +78,8 @@ export const fetchMovies = createAsyncThunk(
 );
 
 
-export const register = createAsyncThunk(
-  "netflix/getLiked",
-  async (name, email, password) => {
-    const response =  await axios.post(`http://0.0.0.0:3000/users/`, { name, email, password });
-    debugger
-    // return movies;
-  }
-);
-
-export const getUsersLikedMovies = createAsyncThunk(
-  "netflix/getLiked",
+export const fetchDataByEvaluation = createAsyncThunk(
+  "netflix/getEvaluation",
   async (datas) => {
     const {
       data: { movies },
@@ -104,14 +95,48 @@ export const getUsersLikedMovies = createAsyncThunk(
   }
 );
 
+export const getUsersLikedMovies = createAsyncThunk(
+  "netflix/getLiked",
+  async (datas) => {
+
+    try {
+      const {
+        data: { movies, lists },
+      } = await axios.get(`http://localhost:3000/users/${datas.user_id}/list_wisheds`, {
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${datas.token}`,
+          'Accept': "application/json",
+        },
+      });
+      debugger
+      return movies;
+    } catch (error) {
+      const { response } = error;
+      if(response.status === 401){
+        localStorage.removeItem('user')
+        window.location.href = '/login'
+      }
+    }
+  });
+
 export const removeMovieFromLiked = createAsyncThunk(
   "netflix/deleteLiked",
   async ({ movieId, email }) => {
+    debugger
+    const datas = JSON.parse(localStorage.getItem('user'))
+
     const {
       data: { movies },
-    } = await axios.put("http://localhost:5000/api/user/remove", {
-      email,
-      movieId,
+    } = await axios.put(`http://localhost:3000/users/${datas.user_id}/remove_list_wisheds`, {
+      movie_id: movieId,
+    }, 
+    {
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${datas.token}`,
+        'Accept': "application/json",
+      }
     });
     return movies;
   }

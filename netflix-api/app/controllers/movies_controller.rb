@@ -1,59 +1,8 @@
-class UsersController < ApplicationController
+class MovieController < ApplicationController
   before_action :authorize_request, except: %i[new create]
   before_action :set_user,
     only: %i[show edit update destroy add_wish list_wisheds evaluation
              remove_list_wisheds]
-
-  # GET /users or /users.json
-  def index
-    @users = User.all
-  end
-
-  # GET /users/1 or /users/1.json
-  def show; end
-
-  # GET /users/new
-  def new
-    @user = User.new
-  end
-
-  # GET /users/1/edit
-  def edit; end
-
-  def login
-    @user = User.find_by_email(params[:email])
-    if @user.password_digest == params[:password]
-      give_token
-    else
-      redirect_to home_url
-    end
-  end
-
-  # POST /users or /users.json
-  def create
-    @user = User.new(user_params)
-
-    if @user.save
-      render json: @user, status: :ok
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH/PUT /users/1 or /users/1.json
-  def update
-    respond_to do |format|
-      if @user.update(user_params)
-        format.html do
-          redirect_to user_url(@user), notice: 'User was successfully updated.'
-        end
-        format.json { render :show, status: :ok, location: @user }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
-    end
-  end
 
   def add_wish
     movie = Movie.find_by(name: movie_params[:name])
@@ -69,14 +18,12 @@ class UsersController < ApplicationController
 
   def list_wisheds
     @movies = Movie.joins(:user_lists).where(user_lists: { user_id: @user.id })
-    @lists = @user.user_lists
-    # byebug
-    render :list_wisheds, status: :ok
 
+    render json: { movies: @movies }, status: :ok
   end
 
   def remove_list_wisheds
-    @user.user_lists.find_by(movie_id: params[:movie_id])&.update(wished: false)
+    # UserList.find_by(movie_id: movie.id, user_id: @user.id)&.update(wished: false)
 
     render json: { message: 'Movie removed to your list' }, status: :ok
   end
@@ -85,7 +32,8 @@ class UsersController < ApplicationController
     movie = Movie.find_by(name: movie_params[:name])
     movie = Movie.create!(movie_params) if movie.blank?
 
-    user_list = @user.user_lists.find_by(movie_id: movie.id)&.update(evaluation: params[:evaluation])
+    user_list = UserList.find_by(movie_id: movie.id,
+      user_id: @user.id)&.update(evaluation: params[:evaluation])
 
     if user_list.blank?
       @user.user_lists.create(movie:, user: @user,
