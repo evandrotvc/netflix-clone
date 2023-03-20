@@ -13,6 +13,7 @@ export default function UserListedMovies() {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [datas, setData] = useState(undefined);
+  const [typeEvaluation, setTypeEvaluation] = useState('neutral');
 
   useEffect( () => {
     function userSignIn(){
@@ -27,7 +28,6 @@ export default function UserListedMovies() {
 
   useEffect(() => {
     if (datas) {
-      debugger
       dispatch(getUsersLikedMovies(datas));
     }
   }, [datas]);
@@ -42,14 +42,29 @@ export default function UserListedMovies() {
       <Navbar isScrolled={isScrolled} />
       <div className="content flex column">
         <h1>My List</h1>
+        <Select
+          className="flex"
+          onChange={(e) => {
+            setTypeEvaluation(e.target.value)
+          }}
+        >
+          {['neutral', 'like', 'dislike'].map((genre, index) => {
+            return (
+              <option value={genre} key={index}>
+                {genre}
+              </option>
+            );
+          })}
+        </Select>
         <div className="grid flex">
-          {movies.map((data, index) => {
+          {movies.filter(data => data.evaluation === typeEvaluation).map((data, index) => {
             return (
               <Card
                 movieData={data.movie}
                 index={index}
                 key={data.movie.id}
-                isLiked={true}
+                isWished={data.wished}
+                Evaluation={data.evaluation}
               />
             );
           })}
@@ -72,4 +87,12 @@ const Container = styled.div`
       gap: 1rem;
     }
   }
+`;
+
+const Select = styled.select`
+  margin-left: 5rem;
+  cursor: pointer;
+  font-size: 1.4rem;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
 `;

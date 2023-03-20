@@ -13,7 +13,7 @@ import video from "../assets/video.mp4";
 import { toast } from 'react-toastify'
 
 
-export default React.memo(function Card({ index, movieData, isLiked = false }) {
+export default React.memo(function Card({ index, movieData, isWished = false, Evaluation = 'neutral' }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
@@ -63,7 +63,6 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
   const evaluation_user = async (movie, evaluation) => {
     try {
       const data = JSON.parse(localStorage.getItem('user'))
-      debugger
 
       const dto = {
         movie: {
@@ -135,9 +134,9 @@ export default React.memo(function Card({ index, movieData, isLiked = false }) {
                   title="Play"
                   onClick={() => navigate("/player")}
                 />
-                <RiThumbUpFill title="Like" onClick={() => evaluation_user(movieData, 'like') } />
-                <RiThumbDownFill title="Dislike" onClick={() => evaluation_user(movieData, 'dislike') }/>
-                {isLiked ? (
+                <RiThumbUpFill title="Like" onClick={() => evaluation_user(movieData, 'like') } color={Evaluation === 'like' ? 'green' : ''} />
+                <RiThumbDownFill title="Dislike" onClick={() => evaluation_user(movieData, 'dislike') } color={Evaluation === 'dislike' ? 'green' : ''}/>
+                {isWished ? (
                   <BsCheck
                     title="Remove from List"
                     onClick={() =>

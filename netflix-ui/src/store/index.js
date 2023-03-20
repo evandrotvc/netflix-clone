@@ -109,7 +109,7 @@ export const getUsersLikedMovies = createAsyncThunk(
           'Accept': "application/json",
         },
       });
-      debugger
+
       return movies;
     } catch (error) {
       const { response } = error;
@@ -123,7 +123,6 @@ export const getUsersLikedMovies = createAsyncThunk(
 export const removeMovieFromLiked = createAsyncThunk(
   "netflix/deleteLiked",
   async ({ movieId, email }) => {
-    debugger
     const datas = JSON.parse(localStorage.getItem('user'))
 
     const {

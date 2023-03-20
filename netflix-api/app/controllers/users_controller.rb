@@ -68,7 +68,6 @@ class UsersController < ApplicationController
   end
 
   def list_wisheds
-    @movies = Movie.joins(:user_lists).where(user_lists: { user_id: @user.id })
     @lists = @user.user_lists
     # byebug
     render :list_wisheds, status: :ok
