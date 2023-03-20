@@ -17,7 +17,7 @@ services:
 
   netflix:
     container_name: netflix-app
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    # command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     # entrypoint: ["tail", "-f", "/dev/null"]
     build: ./netflix-api
       # dockerfile: ./Dockerfile.local
@@ -28,6 +28,10 @@ services:
       - postgres
     ports:
       - 3000:3000
+    # networks:
+    #   - back-tier
+    expose:
+      - 3000
     env_file:
       - .env
     depends_on:
@@ -36,15 +40,43 @@ services:
     tty: true
     environment:
       RAILS_ENV: development
+    restart: always
+    entrypoint: ./entrypoints/docker-entrypoint.sh
 
-  # frontend:
-  #   build: ./netflix-ui
-  #   container_name: netflix-ui
-  #   ports:
-  #     - 3001:3001
-  #   volumes:
-  #     - ./netflix-ui:/netflix-ui
+  frontend:
+    build: ./netflix-ui
+    container_name: netflix-ui
+    ports:
+      - 3001:3001
+    expose:
+      - 3001
+    # networks:
+    #   - front-tier
+    #   - back-tier
+    volumes:
+      - ./netflix-ui:/netflix-ui
+
+  app-migrations:
+    container_name: app-migrations
+    build:
+      # context: .
+      # dockerfile: netflix-api/Dockerfile
+      context: netflix-api
+      dockerfile: ../netflix-api/Dockerfile
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    env_file: .env
+    environment:
+      RAILS_ENV: development
+    entrypoint: ./entrypoints/setup-db.sh
 
 volumes:
   netflix-postgres:
   netflix:
+
+# networks:
+#   # The presence of these objects is sufficient to define them
+#   front-tier: {}
+#   back-tier: {}

@@ -24,7 +24,7 @@ COPY . .
 # COPY frontend/ .
 
 # Build the app
-# RUN npm run build
+RUN npm run build
 
 # Expose $PORT on container.
 # We use a varibale here as the port is something that can differ on the environment.
@@ -43,4 +43,5 @@ EXPOSE 3001
 # ENV PROXY_LOGIN=$PROXY_LOGIN
 
 # Start the app
+# RUN npm build
 CMD [ "npm", "start" ]
