@@ -5,8 +5,6 @@ import background from "../assets/login.jpg";
 import { useNavigate } from "react-router-dom";
 import BackgroundImage from "../components/BackgroundImage";
 import Header from "../components/Header";
-import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-import { firebaseAuth } from "../utils/firebase-config";
 import axios from "axios";
 import { toast } from 'react-toastify'
 
@@ -17,7 +15,7 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`http://localhost:3000/login`, {
+      const response = await axios.post(`http://localhost:3001/login`, {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -35,10 +33,6 @@ function Login() {
       console.log(error.code);
     }
   };
-
-  onAuthStateChanged(firebaseAuth, (currentUser) => {
-    if (currentUser) navigate("/");
-  });
 
   return (
     <Container>

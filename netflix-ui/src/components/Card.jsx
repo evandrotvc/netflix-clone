@@ -19,12 +19,6 @@ export default React.memo(function Card({ index, movieData, isWished = false, Ev
   const [isHovered, setIsHovered] = useState(false);
   const [email, setEmail] = useState(undefined);
 
-  // onAuthStateChanged(firebaseAuth, (currentUser) => {
-  //   if (currentUser) {
-  //     setEmail(currentUser.email);
-  //   } else navigate("/login");
-  // });
-
   const addToList = async (movie) => {
     try {
       const data = JSON.parse(localStorage.getItem('user'))
@@ -38,7 +32,7 @@ export default React.memo(function Card({ index, movieData, isWished = false, Ev
         }
       }
 
-      await axios.post(`http://localhost:3000/users/${data.user_id}/add_wish`, dto, {
+      await axios.post(`http://localhost:3001/users/${data.user_id}/add_wish`, dto, {
         headers: {
           "Content-Type": "application/json",
           'Authorization': `Bearer ${data.token}`,
@@ -74,7 +68,7 @@ export default React.memo(function Card({ index, movieData, isWished = false, Ev
         evaluation: evaluation
       }
 
-      await axios.post(`http://localhost:3000/users/${data.user_id}/evaluation`, dto, {
+      await axios.post(`http://localhost:3001/users/${data.user_id}/evaluation`, dto, {
         headers: {
           "Content-Type": "application/json",
           'Authorization': `Bearer ${data.token}`,

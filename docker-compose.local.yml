@@ -27,11 +27,11 @@ services:
     links:
       - postgres
     ports:
-      - 3000:3000
+      - 3001:3001
     # networks:
     #   - back-tier
     expose:
-      - 3000
+      - 3001
     env_file:
       - .env
     depends_on:
@@ -47,12 +47,14 @@ services:
     build: ./netflix-ui
     container_name: netflix-ui
     ports:
-      - 3001:3001
+      - 3000:3000
     expose:
-      - 3001
+      - 3000
     # networks:
     #   - front-tier
     #   - back-tier
+    links:
+      - netflix
     volumes:
       - ./netflix-ui:/netflix-ui
 
@@ -78,5 +80,4 @@ volumes:
 
 # networks:
 #   # The presence of these objects is sufficient to define them
-#   front-tier: {}
-#   back-tier: {}
+#   front-network:

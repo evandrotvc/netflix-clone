@@ -1,13 +1,10 @@
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import BackgroundImage from "../components/BackgroundImage";
 import Header from "../components/Header";
-import { firebaseAuth } from "../utils/firebase-config";
+
 import axios from "axios";
 import { toast } from 'react-toastify'
 
@@ -23,7 +20,7 @@ function Signup() {
     try {
       const { email, password } = formValues;
 
-      await axios.post(`http://localhost:3000/users`, {
+      await axios.post(`http://localhost:3001/users`, {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -41,10 +38,6 @@ function Signup() {
       console.log(error);
     }
   };
-
-  // onAuthStateChanged(firebaseAuth, (currentUser) => {
-  //   if (currentUser) navigate("/");
-  // });
 
   return (
     <Container showPassword={showPassword}>

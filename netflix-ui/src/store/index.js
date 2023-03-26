@@ -83,7 +83,7 @@ export const fetchDataByEvaluation = createAsyncThunk(
   async (datas) => {
     const {
       data: { movies },
-    } = await axios.get(`http://localhost:3000/users/${datas.user_id}/list_wisheds`, {
+    } = await axios.get(`http://localhost:3001/users/${datas.user_id}/list_wisheds`, {
       headers: {
         "Content-Type": "application/json",
         'Authorization': `Bearer ${datas.token}`,
@@ -102,7 +102,7 @@ export const getUsersLikedMovies = createAsyncThunk(
     try {
       const {
         data: { movies, lists },
-      } = await axios.get(`http://localhost:3000/users/${datas.user_id}/list_wisheds`, {
+      } = await axios.get(`http://localhost:3001/users/${datas.user_id}/list_wisheds`, {
         headers: {
           "Content-Type": "application/json",
           'Authorization': `Bearer ${datas.token}`,
@@ -127,7 +127,7 @@ export const removeMovieFromLiked = createAsyncThunk(
 
     const {
       data: { movies },
-    } = await axios.put(`http://localhost:3000/users/${datas.user_id}/remove_list_wisheds`, {
+    } = await axios.put(`http://localhost:3001/users/${datas.user_id}/remove_list_wisheds`, {
       movie_id: movieId,
     }, 
     {

@@ -40,4 +40,6 @@ COPY --chown=$APP_USER . ./
 
 RUN chmod +x entrypoints/docker-entrypoint.sh
 
+EXPOSE 3001
+
 ENTRYPOINT ["./entrypoints/docker-entrypoint.sh"]

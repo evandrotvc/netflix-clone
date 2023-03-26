@@ -1,6 +1,6 @@
 # Netflix Clone built using React, Redux Toolkit, Styled Components, Axios
 
-
+<!-- http://172.27.0.5:3000/ -->
 ## Instalando projeto
 
 É necessário ter Docker e docker-compose. A aplicação roda o banco e o server tudo em docker. Para instalar o projeto, siga estas etapas:

@@ -16,7 +16,7 @@ export default function Navbar({ isScrolled }) {
 
   const signOut = () => {
     localStorage.removeItem('user');
-    navigate('/login')
+    window.location.href = '/login'
   }
 
   return (

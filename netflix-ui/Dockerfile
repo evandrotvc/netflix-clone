@@ -28,7 +28,7 @@ RUN npm run build
 
 # Expose $PORT on container.
 # We use a varibale here as the port is something that can differ on the environment.
-EXPOSE 3001
+EXPOSE 3000
 
 # Set host to localhost / the docker image
 # ENV NUXT_HOST=0.0.0.0
@@ -44,4 +44,4 @@ EXPOSE 3001
 
 # Start the app
 # RUN npm build
-CMD [ "npm", "start" ]
+CMD [ "npm", "start"]
