@@ -64,7 +64,7 @@ RSpec.describe SessionsController, type: :controller do
       login(user)
       do_request
 
-      expect(session[:user_id]).should be_nil
+      expect(session[:user_id]).to eq(nil)
     end
   end
 end

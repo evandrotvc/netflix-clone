@@ -211,7 +211,7 @@ RSpec.describe UsersController, type: :controller do
 
     context 'with valid parameters' do
       let(:do_request) do
-        put :remove_list_wisheds, params: { user_id: user.id, movie_id: movie.movie_id },
+        put :remove_list_wisheds, params: { user_id: user.id, movie_id: movie.id },
           as: :json
       end
 
@@ -223,6 +223,7 @@ RSpec.describe UsersController, type: :controller do
       it 'user likes a movie' do
         login(user)
         do_request
+
         expect { user_lists.reload }.to change(user_lists, :wished).from(true).to(false)
         expect(response).to have_http_status(:ok)
       end

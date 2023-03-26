@@ -23,7 +23,6 @@ class ApplicationController < ActionController::Base
       @decoded = JWT.decode(token, secret, true).first
       @current_user = User.find(@decoded['user_id'])
     rescue JWT::ExpiredSignature => e
-      puts 'expiredddddd'
       render json: { errors: e.message, message: 'Token expired.' }, status: :unauthorized
     rescue ActiveRecord::RecordNotFound => e
       render json: { errors: e.message }, status: :unauthorized
